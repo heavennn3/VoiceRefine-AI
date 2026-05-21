@@ -28,19 +28,22 @@ def voice_pipeline(audio_file_path):
 
     try:
         response = ollama.chat(
-            model="qwen2.5:7b",
+            model="qwen2.5-coder:7b",
             messages=[
                 {'role': 'system', 'content': system_instruction},
                 {'role': 'user', 'content': raw_transcript}
             ]
         )
-        refined_transcript = response['message']['content']
-        return raw_transcript, refined_transcript
+        polished_transcript = response['message']['content']
+        return raw_transcript, polished_transcript
     except Exception as e:
         return raw_transcript, "ERROR calling local LLM"
-        
 
-    
-    
-
-
+if __name__ == "__main__":
+    sample_file = "audio.wav"
+    if os.path.exists(sample_file):
+        raw, clean = voice_pipeline(sample_file)
+        print("\n=== FINAL REFINED TRANSCRIPT ===")
+        print(clean)
+    else:
+        print(f"Audio file '{sample_file}' not found.")
